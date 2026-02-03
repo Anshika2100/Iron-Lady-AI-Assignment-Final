@@ -1,81 +1,63 @@
-const chatBox = document.getElementById("chat-box");
+let students = JSON.parse(localStorage.getItem("students")) || [];
 
-function botMessage(msg) {
-    chatBox.innerHTML += `<div class="bot">🤖 ${msg}</div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
+function addStudent() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const course = document.getElementById("course").value;
+    const status = document.getElementById("status").value;
+
+    if (!name || !email || !course) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    students.push({ name, email, course, status });
+    localStorage.setItem("students", JSON.stringify(students));
+
+    displayStudents();
+    clearForm();
 }
 
-function userMessage(msg) {
-    chatBox.innerHTML += `<div class="user">🧑 ${msg}</div>`;
-    chatBox.scrollTop = chatBox.scrollHeight;
+function displayStudents() {
+    const tableBody = document.getElementById("studentTable");
+    tableBody.innerHTML = "";
+
+    students.forEach((student, index) => {
+        const row = `
+        <tr>
+            <td>${student.name}</td>
+            <td>${student.email}</td>
+            <td>${student.course}</td>
+            <td>
+                <select onchange="updateStatus(${index}, this.value)">
+                    <option value="New" ${student.status === "New" ? "selected" : ""}>New</option>
+                    <option value="Contacted" ${student.status === "Contacted" ? "selected" : ""}>Contacted</option>
+                    <option value="Enrolled" ${student.status === "Enrolled" ? "selected" : ""}>Enrolled</option>
+                </select>
+            </td>
+            <td>
+                <button onclick="deleteStudent(${index})">Delete</button>
+            </td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
 }
 
-// Initial messages
-botMessage("Welcome to Iron Lady Smart Assistant 😊");
-botMessage("Please tell me your highest education (10th / 12th / Graduate)");
-
-let step = 1;
-let education = "";
-let interest = "";
-
-function sendMessage() {
-    const input = document.getElementById("userInput");
-    const text = input.value.toLowerCase();
-    if (text === "") return;
-
-    userMessage(text);
-    input.value = "";
-
-    if (step === 1) {
-        education = text;
-        botMessage("Are you a beginner or experienced?");
-        step++;
-    }
-    else if (step === 2) {
-        botMessage("Which field are you interested in? (IT / Data / Digital Marketing)");
-        step++;
-    }
-    else if (step === 3) {
-        interest = text;
-        recommendCourse();
-        step++;
-    }
-    else {
-        handleQuestions(text);
-    }
+function updateStatus(index, value) {
+    students[index].status = value;
+    localStorage.setItem("students", JSON.stringify(students));
 }
 
-function recommendCourse() {
-    if (interest.includes("it")) {
-        botMessage("✅ Based on your profile, the **Java Full Stack Program** is best for you.");
-        botMessage("📅 Duration: 6 Months");
-        botMessage("💼 Placement Support Available");
-    }
-    else if (interest.includes("data")) {
-        botMessage("✅ Based on your interest, the **Data Analytics Program** is recommended.");
-        botMessage("📅 Duration: 4 Months");
-        botMessage("💼 Placement Assistance Included");
-    }
-    else {
-        botMessage("✅ The **Digital Marketing Program** is suitable for your profile.");
-        botMessage("📅 Duration: 3 Months");
-        botMessage("💼 Internship Support Available");
-    }
-
-    botMessage("You can ask: Will I get a job? | Is it beginner friendly? | How can I apply?");
+function deleteStudent(index) {
+    students.splice(index, 1);
+    localStorage.setItem("students", JSON.stringify(students));
+    displayStudents();
 }
 
-function handleQuestions(text) {
-    if (text.includes("job")) {
-        botMessage("✔️ Yes, we provide placement support and interview preparation.");
-    }
-    else if (text.includes("beginner")) {
-        botMessage("✔️ Yes, this program is completely beginner-friendly.");
-    }
-    else if (text.includes("apply")) {
-        botMessage("✔️ You can apply through the Iron Lady website or book a counselling session.");
-    }
-    else {
-        botMessage("Please ask a valid question 😊");
-    }
+function clearForm() {
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("course").value = "";
 }
+
+displayStudents();

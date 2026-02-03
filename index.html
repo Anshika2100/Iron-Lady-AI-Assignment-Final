@@ -2,18 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Iron Lady Smart Chatbot</title>
+    <title>Iron Lady Lead Management</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="chat-container">
-    <h2>🤖 Iron Lady Smart Chatbot</h2>
-    <div id="chat-box"></div>
+<h2>Iron Lady - Student Lead Management System</h2>
 
-    <input type="text" id="userInput" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
+<div class="form-container">
+    <input type="text" id="name" placeholder="Student Name">
+    <input type="email" id="email" placeholder="Email">
+    <input type="text" id="course" placeholder="Course Interested">
+    <select id="status">
+        <option value="New">New</option>
+        <option value="Contacted">Contacted</option>
+        <option value="Enrolled">Enrolled</option>
+    </select>
+
+    <button onclick="addStudent()">Add Student</button>
 </div>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Course</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="studentTable"></tbody>
+</table>
 
 <script src="script.js"></script>
 </body>
